@@ -1,5 +1,6 @@
 import {
   Button,
+  FlatList,
   StatusBar,
   StyleSheet,
   Text,
@@ -10,14 +11,14 @@ import { useState } from "react";
 import ListCard from "@/components/ListCard";
 
 export default function App() {
-  const [goalList, setGoalList] = useState("");
+  const [enteredText, setEnteredText] = useState("");
+  const [goalList, setGoalList] = useState([]);
 
-  function InputGoalHandler(text: string) {
-    setGoalList(text);
+  function goalInputHandler(enteredText) {
+    setEnteredText(enteredText);
   }
-
-  function addGoalHandler(text: string) {
-    setGoalList((currentGoalList) => currentGoalList + text);
+  function addGoalHandler() {
+    setGoalList(currentGoals => [...currentGoals, enteredText]);
   }
 
   return (
@@ -26,11 +27,15 @@ export default function App() {
         <TextInput
           style={styles.inputContainer}
           placeholder="Add Goal"
-          onChangeText={InputGoalHandler}
+          onChangeText={goalInputHandler}
         ></TextInput>
-        <Button title="Add Goal" onPress={() => addGoalHandler(goalList)} />
+        <Button title="Add Goal" onPress={addGoalHandler} />
       </View>
-      <View>{goalList}</View>
+      <View style={styles.listItem}>
+         {goalList.map((goal) => (
+          <Text key={goal}>{goal}</Text>
+        ))}
+      </View>
     </View>
   );
 }
@@ -45,5 +50,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  listItem: {
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: "#ccc",
+    borderColor: "black",
+    borderWidth: 1,
   },
 });
