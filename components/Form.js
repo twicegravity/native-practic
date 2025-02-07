@@ -1,38 +1,64 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Button, FlatList} from 'react-native'
 import {useState } from 'react'
 
 export default function App() {
-    const [enteredText, setEnteredText] = useState("");
-    const [goalList, setGoalList] = useState([]);
+    const [gameList, setGameList] = useState([]);
+    const [title, setTitle] = useState('');
+    const [genre, setGenre] = useState('');
+    const [rating, setRating] = useState('');
   
-    function goalInputHandler(enteredText) {
-      setEnteredText(enteredText);
-    }
-    function addGoalHandler() {
-      setGoalList(currentGoals => [...currentGoals, enteredText]);
-    }
+    const handleAddGame = () => {
+        if (title && genre && rating) {
+            setGameList([...gameList, { title, genre, rating }]); 
+            setTitle('');
+            setGenre('');
+            setRating('');
+        }
+      };
+
   
     return (
-      <View style={styles.appContainer}>
+      <View style={styles.formContainer}>
         <View>
           <TextInput
             style={styles.inputContainer}
-            placeholder="Add Goal"
-            onChangeText={goalInputHandler}
+            placeholder="Game Title"
+            value={title}
+            onChangeText={setTitle}
           ></TextInput>
-          <Button title="Add Goal" onPress={addGoalHandler} />
+          <TextInput
+            style={styles.inputContainer}
+            placeholder="Game Genre"
+            value={genre}
+           onChangeText={setGenre}
+          ></TextInput>
+          <TextInput
+            style={styles.inputContainer}
+            placeholder="Rating (1-5)"
+            value={rating}
+            onChangeText={setRating}
+          ></TextInput>
+          <Button title="Add Goal" onPress={handleAddGame} />
         </View>
         <View style={styles.listItem}>
-           {goalList.map((goal) => (
-            <Text key={goal}>{goal}</Text>
-          ))}
-        </View>
+        <FlatList 
+          data={gameList} 
+          keyExtractor={(index) => index.toString()} 
+          renderItem={({ item }) => (
+            <View>
+              <Text>Title: {item.title}</Text> 
+              <Text>Genre: {item.genre}</Text> 
+              <Text>Rating: {item.rating}</Text> 
+            </View>
+          )} 
+        />
+      </View>
       </View>
     );
   }
 
   const styles = StyleSheet.create({
-    appContainer: {
+    formContainer: {
       paddingTop: 50,
       paddingHorizontal: 16,
     },
@@ -41,6 +67,7 @@ export default function App() {
       backgroundColor: "#fff",
       alignItems: "center",
       justifyContent: "center",
+      borderColor: "black",
     },
     listItem: {
       padding: 10,
